@@ -1,0 +1,4 @@
+package com.example.personalbudgetmanagerapp.ui.screen
+
+class BudgetScreen {
+}
