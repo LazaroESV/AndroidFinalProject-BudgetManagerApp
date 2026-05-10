@@ -5,54 +5,52 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun BudgetProgressCard(
-    spentAmount: Double,
-    totalBudget: Double
+    budget: Double,
+    spent: Double,
+    modifier: Modifier = Modifier
 ) {
-
-    val progress =
-        if (totalBudget > 0)
-            (spentAmount / totalBudget).toFloat()
-        else
-            0f
-
-    val remaining = totalBudget - spentAmount
+    val progress = if (budget > 0) (spent / budget).toFloat() else 0f
+    val remaining = budget - spent
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
-
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-
             Text(
                 text = "Monthly Budget",
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
             )
 
             LinearProgressIndicator(
-                progress = { progress },
+                progress = { progress.coerceIn(0f, 1f) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             Text(
-                text = "Spent: $${"%.2f".format(spentAmount)}"
+                text = "Spent: $spent$ / $budget$",
+                style = MaterialTheme.typography.bodyLarge
             )
 
             Text(
-                text = "Remaining: $${"%.2f".format(remaining)}"
+                text = "Remaining: $remaining$",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }

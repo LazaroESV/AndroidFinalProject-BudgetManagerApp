@@ -1,4 +1,6 @@
 package com.example.personalbudgetmanagerapp.model
 
-class TransactionType {
+enum class TransactionType {
+    INCOME,
+    EXPENSE
 }
