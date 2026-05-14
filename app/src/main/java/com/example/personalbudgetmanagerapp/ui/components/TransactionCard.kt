@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +28,12 @@ import com.example.personalbudgetmanagerapp.ui.theme.ExpenseRed
 import com.example.personalbudgetmanagerapp.ui.theme.IncomeGreen
 
 @Composable
-fun TransactionCard(transaction: Transaction) {
+fun TransactionCard(
+    transaction: Transaction,
+    showButtons: Boolean = false,
+    onEdit: (() -> Unit)? = null,
+    onDelete: (() -> Unit)? = null
+) {
 
     val isIncome = transaction.type == TransactionType.INCOME
 
@@ -75,6 +83,15 @@ fun TransactionCard(transaction: Transaction) {
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
+            if (showButtons) {
+                Row {
+                    IconButton(onClick = { onEdit?.invoke() }) {
+                        Icon(Icons.Default.Edit, contentDescription = "Edit")
+                    }
+                    IconButton(onClick = { onDelete?.invoke() }) {
+                        Icon(Icons.Default.Delete, contentDescription = "Delete")
+                    }
+                }
+            }
         }
-    }
-}
+    }}

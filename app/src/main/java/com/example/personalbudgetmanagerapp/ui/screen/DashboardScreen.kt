@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.AttachMoney
@@ -20,46 +21,25 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.personalbudgetmanagerapp.model.Transaction
 import com.example.personalbudgetmanagerapp.model.TransactionType
 import com.example.personalbudgetmanagerapp.ui.components.BudgetProgressCard
 import com.example.personalbudgetmanagerapp.ui.components.SummaryCard
 import com.example.personalbudgetmanagerapp.ui.components.TransactionCard
+import com.example.personalbudgetmanagerapp.viewmodel.DashboardViewModel
 import java.util.UUID
 
 @Composable
-fun DashboardScreen() {
-
-    val recentTransactions = listOf(
-        Transaction(
-            id = UUID.randomUUID(),
-            title = "Groceries",
-            amount = 85.50,
-            category = "Food",
-            date = "May 10, 2026",
-            type = TransactionType.EXPENSE
-        ),
-        Transaction(
-            id = UUID.randomUUID(),
-            title = "Salary",
-            amount = 3200.00,
-            category = "Income",
-            date = "May 8, 2026",
-            type = TransactionType.INCOME
-        ),
-        Transaction(
-            id = UUID.randomUUID(),
-            title = "Netflix",
-            amount = 15.99,
-            category = "Entertainment",
-            date = "May 7, 2026",
-            type = TransactionType.EXPENSE
-        )
-    )
+fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
+    val state by viewModel.uiState.collectAsState()
 
     LazyColumn(
         modifier = Modifier
@@ -120,7 +100,7 @@ fun DashboardScreen() {
                         )
 
                         Text(
-                            text = "1750.00$",
+                            text = state.balance.toString(),
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold
                         )
@@ -150,14 +130,14 @@ fun DashboardScreen() {
 
                 SummaryCard(
                     title = "Income",
-                    amount = 3200.0,
+                    amount = state.totalIncome,
                     icon = Icons.Default.ArrowDownward,
                     modifier = Modifier.weight(1f)
                 )
 
                 SummaryCard(
                     title = "Expenses",
-                    amount = 1450.0,
+                    amount = state.totalExpenses,
                     icon = Icons.Default.ArrowUpward,
                     modifier = Modifier.weight(1f)
                 )
@@ -165,10 +145,11 @@ fun DashboardScreen() {
         }
 
         item {
-
-            BudgetProgressCard(
-                spent = 1450.0,
-                budget = 2000.0
+            SummaryCard(
+                title = "Monthly Budget",
+                amount = state.monthlyBudget,
+                icon = Icons.Default.AccountBalance,
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
@@ -181,7 +162,7 @@ fun DashboardScreen() {
             )
         }
 
-        items(recentTransactions) { transaction ->
+        items(state.recentTransactions) { transaction ->
 
             TransactionCard(
                 transaction = transaction

@@ -25,12 +25,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.personalbudgetmanagerapp.viewmodel.DashboardViewModel
 
 data class CategoryItem(
     val name: String,
@@ -38,7 +42,11 @@ data class CategoryItem(
 )
 
 @Composable
-fun CategoryScreen() {
+fun CategoryScreen(
+    viewModel: DashboardViewModel = hiltViewModel()
+) {
+
+    val uiState by viewModel.uiState.collectAsState()
 
     val categories = listOf(
         CategoryItem("Food", Icons.Default.Fastfood),
@@ -78,6 +86,8 @@ fun CategoryScreen() {
 
             items(categories) { category ->
 
+                val amountSpent = uiState.categoryTotals[category.name] ?: 0.0
+
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
@@ -115,6 +125,12 @@ fun CategoryScreen() {
                             text = category.name,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold
+                        )
+
+                        Text(
+                            text = "Spent: $amountSpent",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }

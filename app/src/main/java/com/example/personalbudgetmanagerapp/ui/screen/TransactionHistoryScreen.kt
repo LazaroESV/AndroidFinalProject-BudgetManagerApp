@@ -15,56 +15,22 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.personalbudgetmanagerapp.model.Transaction
 import com.example.personalbudgetmanagerapp.model.TransactionType
 import com.example.personalbudgetmanagerapp.ui.components.TransactionCard
+import com.example.personalbudgetmanagerapp.viewmodel.TransactionViewModel
 import java.util.UUID
 
 @Composable
-fun TransactionHistoryScreen() {
+fun TransactionHistoryScreen(viewModel: TransactionViewModel = hiltViewModel()) {
 
-    val transactions = listOf(
-
-        // Insert dummy data
-        Transaction(
-            id = UUID.randomUUID(),
-            title = "Groceries",
-            amount = 85.50,
-            category = "Food",
-            date = "May 10, 2026",
-            type = TransactionType.EXPENSE
-        ),
-
-        Transaction(
-            id = UUID.randomUUID(),
-            title = "Salary",
-            amount = 2500.0,
-            category = "Work",
-            date = "May 8, 2026",
-            type = TransactionType.INCOME
-        ),
-
-        Transaction(
-            id = UUID.randomUUID(),
-            title = "Netflix",
-            amount = 15.99,
-            category = "Entertainment",
-            date = "May 6, 2026",
-            type = TransactionType.EXPENSE
-        ),
-
-        Transaction(
-            id = UUID.randomUUID(),
-            title = "Bus Pass",
-            amount = 45.00,
-            category = "Transport",
-            date = "May 5, 2026",
-            type = TransactionType.EXPENSE
-        )
-    )
+    val transactions by viewModel.transactions.collectAsState()
 
     LazyColumn(
         modifier = Modifier
@@ -145,7 +111,11 @@ fun TransactionHistoryScreen() {
         items(transactions) { transaction ->
 
             TransactionCard(
-                transaction = transaction
+                transaction = transaction,
+                showButtons = true,
+                onDelete = {
+                    viewModel.deleteTransaction(transaction)
+                }
             )
         }
     }

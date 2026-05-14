@@ -22,11 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.personalbudgetmanagerapp.ui.components.BudgetProgressCard
+import com.example.personalbudgetmanagerapp.viewmodel.DashboardViewModel
 
 @Composable
-fun BudgetScreen() {
+fun BudgetScreen(viewModel: DashboardViewModel = hiltViewModel()) {
 
+    val state by viewModel.uiState.collectAsState()
     var budgetAmount by remember { mutableStateOf("") }
 
     Surface(
@@ -84,7 +87,12 @@ fun BudgetScreen() {
                     )
 
                     Button(
-                        onClick = { },
+                        onClick = {
+                            budgetAmount.toDoubleOrNull()?.let{
+                                viewModel.saveBudget(it)
+                                budgetAmount = ""
+                            }
+                        },
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary
@@ -100,10 +108,9 @@ fun BudgetScreen() {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            BudgetProgressCard(
-                spent = 850.0,
-                budget = 2000.0
-            )
+            Text(text = "Saved budget: ${state.monthlyBudget}")
+            Text(text = "Spent: ${state.totalExpenses}")
+            Text(text = "Remaining: ${state.remainingBudget}")
         }
     }
 }

@@ -1,3 +1,4 @@
+// app/src/main/java/com/example/personalbudgetmanagerapp/ui/navigation/AppNavigation.kt
 package com.example.personalbudgetmanagerapp.ui.navigation
 
 import androidx.compose.foundation.layout.padding
@@ -20,30 +21,22 @@ import com.example.personalbudgetmanagerapp.ui.screen.TransactionHistoryScreen
 fun AppNavigation(
     navController: NavHostController
 ) {
-
     Scaffold(
-
         containerColor = MaterialTheme.colorScheme.background,
-
         bottomBar = {
-
             BottomNavBar(
                 navController = navController
             )
         }
-
     ) { innerPadding ->
-
         Surface(
             modifier = Modifier.padding(innerPadding),
             color = MaterialTheme.colorScheme.background
         ) {
-
             NavHost(
                 navController = navController,
                 startDestination = "dashboard"
             ) {
-
                 composable("dashboard") {
                     DashboardScreen()
                 }
@@ -53,7 +46,15 @@ fun AppNavigation(
                 }
 
                 composable("add_transaction") {
-                    AddTransactionScreen()
+                    AddTransactionScreen(
+                        onTransactionSaved = {
+                            navController.navigate("history") {
+                                popUpTo("add_transaction"){
+                                    inclusive = true
+                                }
+                            }
+                        }
+                    )
                 }
 
                 composable("budget") {
